@@ -93,3 +93,17 @@ export interface CommentModel {
   };
   post_id: string;
 }
+
+export interface CommentWithCreatorDB extends CommentDB {
+  creator_name: string
+}
+export interface LikeDislikeCommentDB {
+  user_id: string,
+  comment_id: string,
+  has_like: number
+}
+
+export enum COMMENT_LIKE {
+  ALREADY_LIKED = "ALREADY LIKED",
+  ALREADY_DISLIKED = "ALREADY DISLIKED"
+}
