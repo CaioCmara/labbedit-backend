@@ -193,7 +193,7 @@ export class PostBusiness {
     input: LikeOrDeslikePostInputDTO
   ): Promise<void> => {
     const { token, likeId, like } = input;
-    
+
     if (!token) {
       throw new Error("'token' não informado");
     }
@@ -227,7 +227,7 @@ export class PostBusiness {
 
     const post = new Post(
       postWithCreatorDB.id,
-      postWithCreatorDB.creator?.id, 
+      postWithCreatorDB.creator.id,
       postWithCreatorDB.creator_name,
       postWithCreatorDB.content,
       postWithCreatorDB.comments_count,
@@ -236,6 +236,7 @@ export class PostBusiness {
       postWithCreatorDB.created_at,
       postWithCreatorDB.updated_at
     );
+
     const likeDislikeExists = await this.postDatabase.alreadyLikedOrDisliked(
       likeDislikeDB
     );
