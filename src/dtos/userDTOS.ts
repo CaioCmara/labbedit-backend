@@ -1,6 +1,6 @@
 import { UserModel } from "../types"
 
-export interface SignupInput {
+export interface SignupInputDTO {
     name: unknown,
     email: unknown,
     password: unknown

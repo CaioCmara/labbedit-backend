@@ -2,7 +2,6 @@ import { PostDatabase } from "../database/PostDataBase";
 import { Post } from "../models/Post";
 
 import {
-  PostDB,
   LikesDislikesDB,
   POST_LIKE,
   PostWithCreatorDB,
@@ -18,12 +17,17 @@ import {
   GetPostsOutputDTO,
   LikeOrDeslikePostInputDTO,
 } from "../dtos/postDTOS";
+import { UserDatabase } from "../database/UserDatabase";
+import { HashManager } from "../services/HashManager";
+import { BadRequestError } from "../Error/BadRequestError";
+import { NotFoundError } from "../Error/NotFoundError";
 
 export class PostBusiness {
   constructor(
     private postDatabase: PostDatabase,
     private idGenerator: IdGenerator,
-    private tokenManager: TokenManager
+    private tokenManager: TokenManager,
+    private hashManager: HashManager
   ) {}
   public getPosts = async (
     input: GetPostsInputDTO
@@ -68,17 +72,17 @@ export class PostBusiness {
     const { token, content } = input;
 
     if (!token) {
-      throw new Error("'token' não informado");
+      throw new BadRequestError("'token' não informado");
     }
 
     const payload = this.tokenManager.getPayload(token);
 
     if (!payload) {
-      throw new Error("'token' invalido");
+      throw new BadRequestError("'token' invalido");
     }
 
     if (typeof content !== "string") {
-      throw new Error("'content' deve ser uma string");
+      throw new BadRequestError("'content' deve ser uma string");
     }
 
     const id = this.idGenerator.generate();
@@ -108,23 +112,23 @@ export class PostBusiness {
     const { token, content, idToEdit } = input;
 
     if (token === undefined) {
-      throw new Error("'token' não informado");
+      throw new BadRequestError("'token' não informado");
     }
 
     const payload = this.tokenManager.getPayload(token);
 
     if (payload === null) {
-      throw new Error("'token' inválido");
+      throw new BadRequestError("'token' inválido");
     }
 
     if (typeof content !== "string") {
-      throw new Error("'content' deve ser uma string");
+      throw new BadRequestError("'content' deve ser uma string");
     }
 
-    const postDB = await this.postDatabase.findPostById(idToEdit);
+    const postDB = await this.postDatabase.findById(idToEdit);
 
     if (!postDB) {
-      throw new Error("'id' não localizado");
+      throw new BadRequestError("'id' não localizado");
     }
 
     //adms podem editar?
@@ -158,25 +162,25 @@ export class PostBusiness {
     const { token, idToDelete } = input;
 
     if (!token) {
-      throw new Error("'token' não informado");
+      throw new BadRequestError("'token' não informado");
     }
 
     const payload = this.tokenManager.getPayload(token);
 
     if (!payload) {
-      throw new Error("'token' invalido");
+      throw new BadRequestError("'token' invalido");
     }
 
-    const postDB = await this.postDatabase.findPostById(idToDelete);
+    const postDB = await this.postDatabase.findById(idToDelete);
 
     if (!postDB) {
-      throw new Error("'id' não encontrado");
+      throw new NotFoundError("'id' não encontrado");
     }
 
     const creatorId = payload.id;
 
     if (payload.role !== USER_ROLES.ADMIN && postDB.creator_id !== creatorId) {
-      throw new Error("Você não possuii autorização para deletar esse post");
+      throw new BadRequestError("Você não possuii autorização para deletar esse post");
     }
 
     if (postDB) {
@@ -193,7 +197,7 @@ export class PostBusiness {
     input: LikeOrDeslikePostInputDTO
   ): Promise<void> => {
     const { token, likeId, like } = input;
-    
+
     if (!token) {
       throw new Error("'token' não informado");
     }
@@ -213,7 +217,7 @@ export class PostBusiness {
     );
 
     if (!postWithCreatorDB) {
-      throw new Error("'id' não encontrado");
+      throw new NotFoundError("'id' não encontrado");
     }
 
     const userId = payload.id;
@@ -227,7 +231,7 @@ export class PostBusiness {
 
     const post = new Post(
       postWithCreatorDB.id,
-      postWithCreatorDB.creator?.id, 
+      postWithCreatorDB.creator?.id,
       postWithCreatorDB.creator_name,
       postWithCreatorDB.content,
       postWithCreatorDB.comments_count,
@@ -236,7 +240,7 @@ export class PostBusiness {
       postWithCreatorDB.created_at,
       postWithCreatorDB.updated_at
     );
-    const likeDislikeExists = await this.postDatabase.alreadyLikedOrDisliked(
+    const likeDislikeExists = await this.postDatabase.findLikeDislike(
       likeDislikeDB
     );
 
@@ -264,7 +268,7 @@ export class PostBusiness {
         break;
 
       default:
-        await this.postDatabase.likeOrDislike(likeDislikeDB);
+        await this.postDatabase.likeDislike(likeDislikeDB);
         like ? post.addLike() : post.addDislike();
         break;
     }
