@@ -7,6 +7,7 @@ import {
   LikeOrDeslikePostInputDTO,
 } from "../dtos/postDTOS";
 import { PostBusiness } from "../business/PostBusiness";
+import { BaseError } from "../Error/BaseError";
 
 export class PostController {
   constructor(private postBusiness: PostBusiness) {}
@@ -23,7 +24,7 @@ export class PostController {
     } catch (error) {
       console.log(error);
 
-      if (error instanceof Error) {
+      if (error instanceof BaseError) {
         res.send(error.message);
       } else {
         res.status(500).send("Erro inesperado");
@@ -44,7 +45,7 @@ export class PostController {
     } catch (error) {
       console.log(error);
 
-      if (error instanceof Error) {
+      if (error instanceof BaseError) {
         res.send(error.message);
       } else {
         res.status(500).send("Erro inesperado");
@@ -67,7 +68,7 @@ export class PostController {
     } catch (error) {
       console.log(error);
 
-      if (error instanceof Error) {
+      if (error instanceof BaseError) {
         res.send(error.message);
       } else {
         res.status(500).send("Erro inesperado");
@@ -88,7 +89,7 @@ export class PostController {
     } catch (error) {
       console.log(error);
 
-      if (error instanceof Error) {
+      if (error instanceof BaseError) {
         res.send(error.message);
       } else {
         res.status(500).send("Erro inesperado");
@@ -110,7 +111,7 @@ export class PostController {
     } catch (error) {
       console.log(error);
 
-      if (error instanceof Error) {
+      if (error instanceof BaseError) {
         res.send(error.message);
       } else {
         res.status(500).send("Erro inesperado");

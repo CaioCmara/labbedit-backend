@@ -9,7 +9,7 @@ import { PostDatabase } from "./PostDataBase";
 
 export class CommentDataBase extends BaseDatabase {
   public static TABLE_COMMENTS = "comments";
-  public static likes_dislikes_comment = "likesDislikesComments";
+  public static likes_dislikes_comment = "likes_dislikes_comment";
 
   public getComments = async (id: string): Promise<CommentWithCreatorDB[]> => {
     const result: CommentWithCreatorDB[] = await BaseDatabase
@@ -108,7 +108,7 @@ export class CommentDataBase extends BaseDatabase {
         .select()
         .where({
           user_id: likeDislikeDBToFind.user_id,
-          post_id: likeDislikeDBToFind.comment_id,
+          comment_id: likeDislikeDBToFind.comment_id,
         });
     if (LikeDislikeCommentDB) {
       return LikeDislikeCommentDB.has_like === 1
@@ -126,7 +126,7 @@ export class CommentDataBase extends BaseDatabase {
       .delete()
       .where({
         user_id: LikeDislikeCommentDB.user_id,
-        post_id: LikeDislikeCommentDB.comment_id,
+        comment_id: LikeDislikeCommentDB.comment_id,
       });
   };
 
@@ -137,7 +137,7 @@ export class CommentDataBase extends BaseDatabase {
       .update(LikeDislikeCommentDB)
       .where({
         user_id: LikeDislikeCommentDB.user_id,
-        post_id: LikeDislikeCommentDB.comment_id,
+        comment_id: LikeDislikeCommentDB.comment_id,
       });
   };
 }

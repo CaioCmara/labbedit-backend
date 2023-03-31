@@ -3,6 +3,7 @@ import { Request, Response } from "express"
 
 import { CommentBusiness } from "../business/CommentBusiness";
 import { CreateCommentInputDTO } from "../dtos/CommentDTOS";
+import { BaseError } from "../Error/BaseError";
 
 export class CommentController {
     constructor (
@@ -23,7 +24,7 @@ export class CommentController {
         } catch (error) {
             console.log(error);
             
-            if (error instanceof Error) {
+            if (error instanceof BaseError) {
                 res.send(error.message)
             } else {
                 res.status(500).send("Erro inesperado")
@@ -48,7 +49,7 @@ export class CommentController {
             console.log(error)
             
             
-            if (error instanceof Error) {
+            if (error instanceof BaseError) {
                 res.send(error.message)
             } else {
                 res.status(500).send("Erro inesperado")
@@ -70,7 +71,7 @@ export class CommentController {
         } catch (error) {
             console.log(error);
             
-            if (error instanceof Error) {
+            if (error instanceof BaseError) {
                 res.send(error.message)
             } else {
                 res.status(500).send("Erro inesperado")
@@ -94,7 +95,7 @@ export class CommentController {
             console.log(error)
             console.log(error);
             
-            if (error instanceof Error) {
+            if (error instanceof BaseError) {
                 res.send(error.message)
             } else {
                 res.status(500).send("Erro inesperado")

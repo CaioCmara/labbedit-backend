@@ -14,6 +14,7 @@ const userController = new UserController(
         new IdGenerator(),
         new TokenManager(),
         new HashManager()
+
     )
 )
  

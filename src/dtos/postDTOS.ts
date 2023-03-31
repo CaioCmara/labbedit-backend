@@ -2,6 +2,7 @@ import { PostModel } from "../types"
 
 export interface GetPostsInputDTO {
     token: string | undefined
+    q?: string;
 }
 
 export type GetPostsOutputDTO = PostModel[]

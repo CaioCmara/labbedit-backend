@@ -44,7 +44,7 @@ CREATE TABLE
 
 SELECT * FROM comments;
 
-DROP TABLE * comments;
+DROP TABLE comments;
 
 CREATE TABLE
     comments(
@@ -65,14 +65,13 @@ CREATE TABLE
     likes_dislikes_comment(
         user_id TEXT NOT NULL,
         comment_id TEXT NOT NULL,
- 
-        like INTEGER NOT NULL,
+        has_like INTEGER NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY (comment_id) REFERENCES comments (id) ON DELETE CASCADE ON UPDATE CASCADE
  
     );
 SELECT *
-FROM "likesDislikes";
+FROM "likes_dislikes_comment";
 
 DROP TABLE "likesDislikes";
 
@@ -123,7 +122,7 @@ VALUES
     ("c001", "p001", "u001", "Indo viajar agora!"),
     ("c002", "p001", "u002", "Au auuuuuu");
 
-INSERT INTO likes_dislikes_comment (user_id, comment_id, like)
+INSERT INTO likes_dislikes_comment (user_id, comment_id, has_like)
 VALUES ("u002", "c001",  1),
         ("u001", "c002",  0);
 
@@ -135,8 +134,10 @@ SELECT
     comments.id AS comment_id,
     comments.creator_id,
     users.name AS creator_name,
-    likes_dislikes_comment.like
+    likes_dislikes_comment.has_like
 FROM posts
     INNER JOIN comments ON posts.id = comments.post_id
     INNER JOIN users ON comments.creator_id = users.id
     INNER JOIN likes_dislikes_comment ON comments.id = likes_dislikes_comment.comment_id;
+
+    

@@ -41,7 +41,7 @@ export class PostDatabase extends BaseDatabase {
     await BaseDatabase.connection(PostDatabase.TABLE_POSTS).insert(newPost);
   };
 
-  public findPostById = async (id: string): Promise<PostDB | undefined> => {
+  public findById = async (id: string): Promise<PostDB | undefined> => {
     const result: PostDB[] = await BaseDatabase.connection(
       PostDatabase.TABLE_POSTS
     )
@@ -85,14 +85,14 @@ export class PostDatabase extends BaseDatabase {
     return result[0];
   };
 
-  public likeOrDislike = async (
+  public likeDislike = async (
     likeDislike: LikesDislikesDB
   ): Promise<void> => {
     await BaseDatabase.connection(PostDatabase.TABLE_LIKES_DISLIKES).insert(
       likeDislike
     );
   };
-  public alreadyLikedOrDisliked = async (
+  public findLikeDislike = async (
     likeDislikeDBToFind: LikesDislikesDB
   ): Promise<POST_LIKE | null> => {
     const [likeDislikeDB]: LikesDislikesDB[] = await BaseDatabase.connection(
