@@ -221,7 +221,7 @@ export class PostBusiness {
     }
 
     const userId = payload.id;
-    const likeValue = like ? true : false;
+    const likeValue = like ? 1 : 0;
 
     const likeDislikeDB: LikesDislikesDB = {
       user_id: userId,

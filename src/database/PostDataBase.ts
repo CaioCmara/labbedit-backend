@@ -87,11 +87,11 @@ export class PostDatabase extends BaseDatabase {
 
   public likeDislike = async (
     likeDislike: LikesDislikesDB
-  ): Promise<void> => {
-    await BaseDatabase.connection(PostDatabase.TABLE_LIKES_DISLIKES).insert(
-      likeDislike
-    );
-  };
+    ): Promise<void> => {
+      await BaseDatabase.connection(PostDatabase.TABLE_LIKES_DISLIKES).insert(
+        likeDislike
+      );
+    };
   public findLikeDislike = async (
     likeDislikeDBToFind: LikesDislikesDB
   ): Promise<POST_LIKE | null> => {
@@ -104,7 +104,7 @@ export class PostDatabase extends BaseDatabase {
         post_id: likeDislikeDBToFind.post_id,
       });
     if (likeDislikeDB) {
-      return likeDislikeDB.has_like === true
+      return likeDislikeDB.has_like === 1
         ? POST_LIKE.ALREADY_LIKED
         : POST_LIKE.ALREADY_DISLIKED;
     } else {

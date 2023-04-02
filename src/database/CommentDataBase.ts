@@ -111,7 +111,7 @@ export class CommentDataBase extends BaseDatabase {
           comment_id: likeDislikeDBToFind.comment_id,
         });
     if (LikeDislikeCommentDB) {
-      return LikeDislikeCommentDB.has_like === true
+      return LikeDislikeCommentDB.has_like === 1
         ? COMMENT_LIKE.ALREADY_LIKED
         : COMMENT_LIKE.ALREADY_DISLIKED;
     } else {

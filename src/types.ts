@@ -49,7 +49,7 @@ export interface PostModel {
 export interface LikesDislikesDB {
   user_id: string;
   post_id: string;
-  has_like: boolean;
+  has_like: number;
 }
 
 export enum POST_LIKE {
@@ -100,7 +100,7 @@ export interface CommentWithCreatorDB extends CommentDB {
 export interface LikeDislikeCommentDB {
   user_id: string,
   comment_id: string,
-  has_like: boolean
+  has_like: number
 }
 
 export enum COMMENT_LIKE {
