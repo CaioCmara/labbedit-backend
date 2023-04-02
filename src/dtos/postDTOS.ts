@@ -26,7 +26,7 @@ export interface DeletePostInputDTO {
 export interface LikeOrDeslikePostInputDTO {
     likeId: string,
     token: string | undefined,
-    like: unknown
+    like: number
 }
 
 //não precisa de

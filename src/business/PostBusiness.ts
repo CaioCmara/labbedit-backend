@@ -4,6 +4,7 @@ import { Post } from "../models/Post";
 import {
   LikesDislikesDB,
   POST_LIKE,
+  PostDB,
   PostWithCreatorDB,
   USER_ROLES,
 } from "../types";
@@ -23,6 +24,9 @@ import { BadRequestError } from "../Error/BadRequestError";
 import { NotFoundError } from "../Error/NotFoundError";
 
 export class PostBusiness {
+  static toPostBusinessModel(updatedPost: PostDB): PostBusiness {
+    throw new Error("Method not implemented.");
+  }
   constructor(
     private postDatabase: PostDatabase,
     private idGenerator: IdGenerator,
@@ -195,7 +199,7 @@ export class PostBusiness {
 
   public likeOrDislikePost = async (
     input: LikeOrDeslikePostInputDTO
-  ): Promise<void> => {
+  ): Promise<{ message: string; post: PostBusiness }> => {
     const { token, likeId, like } = input;
 
     if (!token) {
@@ -244,32 +248,41 @@ export class PostBusiness {
       likeDislikeDB
     );
 
-    if (likeDislikeExists === POST_LIKE.ALREADY_LIKED) {
-      if (like) {
-        await this.postDatabase.removeLikeDislike(likeDislikeDB)
-        post.removeLike()
-      } else {
-        await this.postDatabase.updateLikeDislike(likeDislikeDB)
-        post.removeLike()
-        post.addDislike()
-      }
-    } else if (likeDislikeExists === POST_LIKE.ALREADY_DISLIKED) {
-      if (like) {
-        await this.postDatabase.updateLikeDislike(likeDislikeDB)
-        post.removeDislike()
-        post.addLike()
-      } else {
-        await this.postDatabase.removeLikeDislike(likeDislikeDB)
-        post.removeDislike()
-      }
-    } else {
-      await this.postDatabase.likeDislike(likeDislikeDB)
-  
-      like ? post.addLike() : post.addDislike()
+    switch (likeDislikeExists) {
+      case POST_LIKE.ALREADY_LIKED:
+        if (like) {
+          await this.postDatabase.removeLikeDislike(likeDislikeDB);
+          post.removeLike();
+        } else {
+          await this.postDatabase.updateLikeDislike(likeDislikeDB);
+          post.removeLike();
+          post.addDislike();
+        }
+        break;
+
+      case POST_LIKE.ALREADY_DISLIKED:
+        if (like) {
+          await this.postDatabase.updateLikeDislike(likeDislikeDB);
+          post.removeLike();
+          post.addLike();
+        } else {
+          await this.postDatabase.removeLikeDislike(likeDislikeDB);
+          post.removeDislike();
+        }
+        break;
+
+      default:
+        await this.postDatabase.likeDislike(likeDislikeDB);
+        like ? post.addLike() : post.addDislike();
+        break;
     }
 
-    const updatedPost = post.toDBModel()
-  
-    await this.postDatabase.updatePost(likeId, updatedPost)
-  }
+    const updatedPost = post.toDBModel();
+
+    await this.postDatabase.updatePost(likeId, updatedPost);
+    return {
+      message: `Post ${like ? "curtido" : "descurtido"} com sucesso`,
+      post: PostBusiness.toPostBusinessModel(updatedPost),
+    };
+  };
 }
