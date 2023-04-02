@@ -185,7 +185,7 @@ export class CommentBusiness {
     }
 
     const userId = payload.id;
-    const likeValue = like ? 1 : 0;
+    const likeValue = like ? true : false;
     const creatorName = payload.name;
 
     const likeDislikeDB: LikeDislikeCommentDB = {
