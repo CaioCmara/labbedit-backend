@@ -195,7 +195,7 @@ export class PostBusiness {
 
   public likeOrDislikePost = async (
     input: LikeOrDeslikePostInputDTO
-  ): Promise<string> => {
+  ): Promise<void> => {
     const { token, likeId, like } = input;
 
     if (!token) {
@@ -221,7 +221,7 @@ export class PostBusiness {
     }
 
     const userId = payload.id;
-    const likeValue = like ? 1 : 0;
+    const likeValue = like ? true : false;
 
     const likeDislikeDB: LikesDislikesDB = {
       user_id: userId,
@@ -244,49 +244,37 @@ export class PostBusiness {
       likeDislikeDB
     );
 
-    let output
-
-    if (likeDislikeExists === POST_LIKE.ALREADY_LIKED) {
+    switch (likeDislikeExists) {
+      case POST_LIKE.ALREADY_LIKED:
         if (like) {
-            await this.postDatabase.removeLikeDislike(likeDislikeDB)
-            post.removeLike()
-            output = "Like removido com sucesso"
+          await this.postDatabase.removeLikeDislike(likeDislikeDB);
+          post.removeLike();
         } else {
-            await this.postDatabase.updateLikeDislike(likeDislikeDB)
-            post.removeLike()
-            post.addDislike()
-            output = "Dislike removido com sucesso"
+          await this.postDatabase.updateLikeDislike(likeDislikeDB);
+          post.removeLike();
+          post.addDislike();
         }
+        break;
 
-    } else if (likeDislikeExists === POST_LIKE.ALREADY_DISLIKED) {
+      case POST_LIKE.ALREADY_DISLIKED:
         if (like) {
-            await this.postDatabase.updateLikeDislike(likeDislikeDB)
-            post.removeDislike()
-            post.addLike()
-            output = "Like adicionado com sucesso"
-
+          await this.postDatabase.updateLikeDislike(likeDislikeDB);
+          post.removeLike();
+          post.addLike();
         } else {
-            await this.postDatabase.removeLikeDislike(likeDislikeDB)
-            post.removeDislike()
-            output = "Dislike removido com sucesso"
-
+          await this.postDatabase.removeLikeDislike(likeDislikeDB);
+          post.removeDislike();
         }
-    } else {
-        await this.postDatabase.likeDislike(likeDislikeDB)
-        if (like) {
-            post.addLike()
-            output = "Like adicionado com sucesso"
-        } else {
-            post.addDislike()
-            output = "Dislike adicionado com sucesso"
-        }
+        break;
 
+      default:
+        await this.postDatabase.likeDislike(likeDislikeDB);
+        like ? post.addLike() : post.addDislike();
+        break;
     }
 
-    const updatedPostDB = post.toDBModel()
-    await this.postDatabase.updatePost(likeId, updatedPostDB)
+    const updatedPost = post.toDBModel();
 
-    return output
- 
-}
+    await this.postDatabase.updatePost(likeId, updatedPost);
+  };
 }

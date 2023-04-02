@@ -104,7 +104,7 @@ export class PostDatabase extends BaseDatabase {
         post_id: likeDislikeDBToFind.post_id,
       });
     if (likeDislikeDB) {
-      return likeDislikeDB.has_like === 1
+      return likeDislikeDB.has_like === true
         ? POST_LIKE.ALREADY_LIKED
         : POST_LIKE.ALREADY_DISLIKED;
     } else {
