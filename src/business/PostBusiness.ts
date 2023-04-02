@@ -209,7 +209,7 @@ export class PostBusiness {
     }
 
     if (typeof like !== "boolean") {
-      throw new Error("'like' deve ser 1 ou 2");
+      throw new Error("'like' deve ser true ou false");
     }
 
     const postWithCreatorDB = await this.postDatabase.postWithCreatorById(
