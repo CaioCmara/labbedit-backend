@@ -244,37 +244,32 @@ export class PostBusiness {
       likeDislikeDB
     );
 
-    switch (likeDislikeExists) {
-      case POST_LIKE.ALREADY_LIKED:
-        if (like) {
-          await this.postDatabase.removeLikeDislike(likeDislikeDB);
-          post.removeLike();
-        } else {
-          await this.postDatabase.updateLikeDislike(likeDislikeDB);
-          post.removeLike();
-          post.addDislike();
-        }
-        break;
-
-      case POST_LIKE.ALREADY_DISLIKED:
-        if (like) {
-          await this.postDatabase.updateLikeDislike(likeDislikeDB);
-          post.removeLike();
-          post.addLike();
-        } else {
-          await this.postDatabase.removeLikeDislike(likeDislikeDB);
-          post.removeDislike();
-        }
-        break;
-
-      default:
-        await this.postDatabase.likeDislike(likeDislikeDB);
-        like ? post.addLike() : post.addDislike();
-        break;
+    if (likeDislikeExists === POST_LIKE.ALREADY_LIKED) {
+      if (like) {
+        await this.postDatabase.removeLikeDislike(likeDislikeDB)
+        post.removeLike()
+      } else {
+        await this.postDatabase.updateLikeDislike(likeDislikeDB)
+        post.removeLike()
+        post.addDislike()
+      }
+    } else if (likeDislikeExists === POST_LIKE.ALREADY_DISLIKED) {
+      if (like) {
+        await this.postDatabase.updateLikeDislike(likeDislikeDB)
+        post.removeDislike()
+        post.addLike()
+      } else {
+        await this.postDatabase.removeLikeDislike(likeDislikeDB)
+        post.removeDislike()
+      }
+    } else {
+      await this.postDatabase.likeDislike(likeDislikeDB)
+  
+      like ? post.addLike() : post.addDislike()
     }
 
-    const updatedPost = post.toDBModel();
-
-    await this.postDatabase.updatePost(likeId, updatedPost);
-  };
+    const updatedPost = post.toDBModel()
+  
+    await this.postDatabase.updatePost(likeId, updatedPost)
+  }
 }
