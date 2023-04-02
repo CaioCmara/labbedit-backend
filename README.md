@@ -1,6 +1,6 @@
 # Labeddit-backend
 O Labeddit é uma rede social com o objetivo de promover a conexão e interação entre pessoas. Esse é o back-end do projeto e conta com diversas requisições. 
-Link do repositório front-end é [esse aqui] (https://github.com/CaioCmara/labbedit-backend)
+Link do repositório front-end é [esse aqui](https://github.com/CaioCmara/labbedit-front)
 
 Você também pode acessar a documentação no Postman [clicando aqui](https://documenter.getpostman.com/view/24460778/2s93RUvYFs)
  
