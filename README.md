@@ -47,7 +47,8 @@ Testes feitos em alguns dos endpoints:
  
 ##  Banco de Dados
 
-![mydiagram](https://user-images.githubusercontent.com/87785891/229253404-09f0da42-2a15-40e2-9fb7-77d560e5304e.png)
+![mydiagram](https://user-images.githubusercontent.com/87785891/229341200-e9548aff-3533-4904-9de5-84c17012f4e7.png)
+
 
 ## Rodando o projeto
 1. Faça um clone desse repositório;
